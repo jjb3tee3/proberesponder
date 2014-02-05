@@ -75,6 +75,25 @@ int main(int argc, char **argv) {
 		printf("[*] Driver: \"%s\"\n", driver->name);
 	}
 
+	if((context = lorcon_create(iface, driver)) == NULL) {
+		printf("[!] Failed to create context");
+		return -1;
+	}
+
+	if(lorcon_open_injmon(context) < 0) {
+		printf("[!] Could not create injection/monitor mode interfce.\n");
+		lorcon_free_driver_list(driver);
+	}	
+
+	lorcon_set_channel(context, ap_info.channel);
+	
+	printf("[!] Sniffing for probe requests.\n");
+
+	//lorcon_loop(context, 0, probe_state, NULL);
+
+	lorcon_close(context);
+	
+	lorcon_free(context);
 
 	return 0;
 } 
