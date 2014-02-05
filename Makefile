@@ -3,13 +3,13 @@ CFLAGS = -Wall -g
 LIBS = -lorcon2
 INCLUDES=
 TARGET = presp
-SRCS = main.c
+SRCS = proberesponder.h main.c
 OBJS = $(SRCS:.c=.o)
 
 .PHONY: depend clean
 
 all: $(TARGET)
-	@echo Compiling something!
+	@echo Run with: $(TARGET) -s SSID -i Interface -c Channel
 
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(TARGET) $(OBJS) $(LIBS)
