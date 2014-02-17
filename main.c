@@ -15,6 +15,14 @@ void usage(char *argv[]) {
 	printf("\t%s\n", argv[0]);
 }
 
+void send_probe_response() {
+	lcpa_metapack_t *metapack;
+	lorcon_packet_t *txpacket;
+
+	metapack = lcpa_init();
+	lcpf_proberesp(metapack, ap_info.dst_mac, ap_info.src_mac, ap_info.bssid, 0x00, 0x00, 0x00, 0x00, ap_info.
+}
+
 int is_probe_req(lorcon_packet_t *packet) {
 	int ret, i;
 	char ssid[256];
@@ -24,16 +32,31 @@ int is_probe_req(lorcon_packet_t *packet) {
 		for(i=0; i<packet->packet_header[PSSID_OFFSET-1]; i++) {
 			ssid[i] = packet->packet_header[PSSID_OFFSET + i];
 		}
-
+		printf("[!] Probe from ");
+		// Mac address..?
+		for(i=1; i<=MAC_LEN;i++)
+		{
+		    printf("%02x", packet->packet_header[SRC_MAC_OFFSET+i]);
+		    
+		    if(i < MAC_LEN)
+			printf(":");
+		}
+		
 		ssid[packet->packet_header[PSSID_OFFSET-1]] = '\0';
-	
-		ret = strncmp(ssid, ap_info.ssid, packet->packet_header[PSSID_OFFSET-1]);
+		printf(" SSID: %s\n", ssid);	
+		/*! 
+			This currently reports all probe packets it
+			finds. Uncommenting will enable the -f filter
+			option which will only report matches on those
+			packets where the SSID matches the criteria.
+		!*/
+		// ret = strncmp(ssid, ap_info.ssid, packet->packet_header[PSSID_OFFSET-1]);
 
-		if(ret == 0) {
-			// Grab mac to make sure we can filter results...
+		// if(ret == 0) {
+			//  Future: Grab mac to make sure we can filter results...
 			ap_info.got_probe_req = 1;
 			return 1;
-		}
+		//}
 	}
 
 	return 0;
@@ -41,7 +64,9 @@ int is_probe_req(lorcon_packet_t *packet) {
 
 void probe_listen(lorcon_t *context, lorcon_packet_t *packet, u_char *user) {
 	if(is_probe_req(packet) && ap_info.got_probe_req == 1) {
-		printf("[+] Detected probe request!\n");
+	//	printf("[+] Detected probe request!\n");
+	//	printf("[+] Probe SSID: %s\n", ap_info.ssid);
+	//	ap_info.got_probe_req = 0;
 	}
 }
 
@@ -119,7 +144,7 @@ int main(int argc, char **argv) {
 	
 	printf("[!] Sniffing for probe requests.\n");
 
-	//lorcon_loop(context, 0, probe_state, NULL);
+	lorcon_loop(context, 0, probe_listen, NULL);
 
 	lorcon_close(context);
 	
