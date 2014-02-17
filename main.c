@@ -16,13 +16,13 @@ void usage(char *argv[]) {
 	printf("\t%s\n", argv[0]);
 }
 
-void send_probe_response() {
+/*void send_probe_response() {
 	lcpa_metapack_t *metapack;
 	lorcon_packet_t *txpacket;
 
 	metapack = lcpa_init();
 	lcpf_proberesp(metapack, ap_info.dst_mac, ap_info.src_mac, ap_info.bssid, 0x00, 0x00, 0x00, 0x00, ap_info.
-}
+}*/
 
 int is_probe_req(lorcon_packet_t *packet) {
 	int ret, i;
@@ -34,8 +34,8 @@ int is_probe_req(lorcon_packet_t *packet) {
 		for(i=0; i<packet->packet_header[PSSID_OFFSET-1]; i++) {
 			ssid[i] = packet->packet_header[PSSID_OFFSET + i];
 		}
-		time_t = time(NULL);
-		printf("[!] <%s> Probe from ", asctime(localtime(&ltime));
+		ltime = time(NULL);
+		printf("[!] <%s> Probe from ", asctime(localtime(&ltime)));
 		// Mac address..?
 		for(i=1; i<=MAC_LEN;i++)
 		{
