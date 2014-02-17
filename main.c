@@ -7,6 +7,7 @@
 		o Context cleanup
 */
 #include "proberesponder.h"
+#include <time.h>
 
 ap_info_t ap_info;
 
@@ -27,12 +28,14 @@ int is_probe_req(lorcon_packet_t *packet) {
 	int ret, i;
 	char ssid[256];
 	char mac[MAC_LEN];
+	time_t ltime;
 
 	if((packet->packet_header[0] == 0x40) && (packet->packet_header[PSSID_OFFSET-1] < 255) && (packet->packet_header[PSSID_OFFSET-1] != 0)) {
 		for(i=0; i<packet->packet_header[PSSID_OFFSET-1]; i++) {
 			ssid[i] = packet->packet_header[PSSID_OFFSET + i];
 		}
-		printf("[!] Probe from ");
+		time_t = time(NULL);
+		printf("[!] <%s> Probe from ", asctime(localtime(&ltime));
 		// Mac address..?
 		for(i=1; i<=MAC_LEN;i++)
 		{
